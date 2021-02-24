@@ -1,8 +1,5 @@
 package com.educandoweb.api.resources;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.educandoweb.api.domain.Categoria;
 import com.educandoweb.api.services.CategoriaService;
 
