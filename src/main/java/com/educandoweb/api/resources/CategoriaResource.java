@@ -2,6 +2,7 @@ package com.educandoweb.api.resources;
 
 import com.educandoweb.api.domain.Categoria;
 import com.educandoweb.api.services.CategoriaService;
+import com.educandoweb.api.services.exceptions.ObjectNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,11 +27,8 @@ public class CategoriaResource {
     )
     public ResponseEntity<Categoria> find(@PathVariable Integer id){
         Categoria responseData = new Categoria();
-        try{
-            responseData = categoriaService.buscar(id);
-        }catch(NotFoundException e){
-            return ResponseEntity.notFound().build();
-        }
+        
+        responseData = categoriaService.buscar(id);
 
         return ResponseEntity.ok().body(responseData);
     }

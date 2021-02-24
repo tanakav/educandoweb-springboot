@@ -12,9 +12,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 public class Produto implements Serializable{
-    private static final long serialVersionUID = 465426221756280292L;
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +26,7 @@ public class Produto implements Serializable{
     
     private Double preco;
 
+    @JsonBackReference
     @ManyToMany
     @JoinTable(
         name = "PRODUTO_CATEGORIA",
