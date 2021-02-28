@@ -1,6 +1,7 @@
 package com.educandoweb.api.domain;
 
 import com.educandoweb.api.domain.enums.TipoCliente;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,6 +20,7 @@ public class Cliente implements Serializable{
     private Integer tipo;
 
     @OneToMany(mappedBy = "cliente")
+    @JsonManagedReference
     private List<Endereco> enderecos = new ArrayList<>();
 
     @ElementCollection
