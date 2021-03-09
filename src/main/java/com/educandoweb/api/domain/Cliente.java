@@ -1,11 +1,23 @@
 package com.educandoweb.api.domain;
 
-import com.educandoweb.api.domain.enums.TipoCliente;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-import javax.persistence.*;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import com.educandoweb.api.domain.enums.TipoCliente;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 public class Cliente implements Serializable{
@@ -28,6 +40,7 @@ public class Cliente implements Serializable{
     private Set<String> telefones = new HashSet<>();
     
     @OneToMany(mappedBy="cliente")
+    @JsonBackReference
     private List<Pedido> pedidos = new ArrayList<>();
 
     public Cliente(){}    
