@@ -2,7 +2,9 @@ package com.educandoweb.api.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -34,6 +37,9 @@ public class Produto implements Serializable{
         inverseJoinColumns =  @JoinColumn(name = "categoria_id")
     )
     private List<Categoria> categorias = new ArrayList<>();
+    
+    @OneToMany(mappedBy="id.produto")
+    private Set<ItemPedido> itens = new HashSet<>();
 
     public Produto(){}
 
@@ -41,6 +47,16 @@ public class Produto implements Serializable{
         this.id = id;
         this.nome = nome;
         this.preco = preco;
+    }
+    
+    public List<Pedido> getPedidos(){
+    	List<Pedido> lista = new ArrayList<>();
+    	
+    	for(ItemPedido item : itens) {
+    		lista.add(item.getPedido());
+    	}
+    	
+    	return lista;
     }
 
     public Integer getId() {
@@ -73,9 +89,17 @@ public class Produto implements Serializable{
 
     public void setCategorias(List<Categoria> categorias) {
         this.categorias = categorias;
-    }
+    }    
 
-    @Override
+    public Set<ItemPedido> getItems() {
+		return itens;
+	}
+
+	public void setItems(Set<ItemPedido> items) {
+		this.itens = items;
+	}
+
+	@Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
