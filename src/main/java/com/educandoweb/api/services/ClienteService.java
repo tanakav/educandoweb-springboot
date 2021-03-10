@@ -13,7 +13,7 @@ public class ClienteService {
     @Autowired
     private ClienteRepository clienteRepository;
 
-    public Cliente buscar(Integer id){
+    public Cliente find(Integer id){
         Cliente returnedCliente = new Cliente();
 
         if(clienteRepository.findById(id).isPresent()){

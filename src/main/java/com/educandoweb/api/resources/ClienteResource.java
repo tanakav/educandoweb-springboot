@@ -25,7 +25,7 @@ public class ClienteResource {
     public ResponseEntity<Cliente> find(@PathVariable Integer id){
     	Cliente responseData = new Cliente();
         
-        responseData = clienteService.buscar(id);
+        responseData = clienteService.find(id);
 
         return ResponseEntity.ok().body(responseData);
     }

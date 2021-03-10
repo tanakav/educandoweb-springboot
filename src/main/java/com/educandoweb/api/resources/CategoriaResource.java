@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,7 +31,7 @@ public class CategoriaResource {
     public ResponseEntity<Categoria> find(@PathVariable Integer id){
         Categoria responseData = new Categoria();
         
-        responseData = categoriaService.buscar(id);
+        responseData = categoriaService.find(id);
 
         return ResponseEntity.ok().body(responseData);
     }
@@ -47,5 +48,15 @@ public class CategoriaResource {
     	
     	return ResponseEntity.created(uri).build();
     	
+    }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<Categoria> update(
+    		@PathVariable Integer id, 
+    		@RequestBody Categoria categoria){
+    	categoria.setId(id);
+    	Categoria categoriaAtualizada = categoriaService.update(categoria);    	
+    	
+    	return ResponseEntity.ok().body(categoriaAtualizada);
     }
 }
