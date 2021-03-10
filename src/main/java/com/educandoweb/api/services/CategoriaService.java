@@ -1,10 +1,14 @@
 package com.educandoweb.api.services;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.educandoweb.api.domain.Categoria;
+import com.educandoweb.api.dto.CategoriaDto;
 import com.educandoweb.api.repositories.CategoriaRepository;
 import com.educandoweb.api.services.exceptions.DataIntegrityException;
 import com.educandoweb.api.services.exceptions.ObjectNotFoundException;
@@ -45,6 +49,17 @@ public class CategoriaService {
     	}catch(DataIntegrityViolationException e) {
     		throw new DataIntegrityException("Não é possível excluir uma categoria que possui produtos");
     	}
+    }
+    
+    public List<CategoriaDto> findAll(){
+    	List<Categoria> categorias = (List<Categoria>) categoriaRepository.findAll();
+    	List<CategoriaDto> categoriasDto;
+    	
+    	categoriasDto = categorias.stream()
+    			.map(categoria -> new CategoriaDto(categoria))
+    			.collect(Collectors.toList());    	
+    	
+    	return categoriasDto;
     }
     
 }
