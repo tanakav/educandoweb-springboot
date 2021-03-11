@@ -4,12 +4,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.educandoweb.api.services.exceptions.DataIntegrityException;
 import com.educandoweb.api.services.exceptions.ObjectNotFoundException;
-import com.educandoweb.api.services.exceptions.StandardError;
 
 @ControllerAdvice
 public class ResourceExceptionHandler {
@@ -41,4 +42,21 @@ public class ResourceExceptionHandler {
         
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
-}
+    
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<StandardError> validation(
+    		MethodArgumentNotValidException e,
+    		HttpServletRequest request){
+    	
+    	 ValidationError validationError = new ValidationError(
+    	            HttpStatus.BAD_REQUEST.value(),
+    	            "Erro de validacao",
+    	            System.currentTimeMillis());
+    	 
+    	 for(FieldError error : e.getBindingResult().getFieldErrors()) {
+    		 validationError.addError(error.getField(), error.getDefaultMessage());
+    	 }
+    	        
+    	 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(validationError);    	
+    }
+} 

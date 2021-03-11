@@ -1,4 +1,4 @@
-package com.educandoweb.api.services.exceptions;
+package com.educandoweb.api.resources.exceptions;
 
 import java.io.Serializable;
 
