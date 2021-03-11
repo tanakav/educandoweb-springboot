@@ -3,6 +3,8 @@ package com.educandoweb.api.resources;
 import java.net.URI;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +45,8 @@ public class CategoriaResource {
     }
     
     @PostMapping
-    public ResponseEntity<Void> insert(@RequestBody Categoria categoria){
+    public ResponseEntity<Void> insert(@Valid @RequestBody CategoriaDto categoriaDto){
+    	Categoria categoria = categoriaService.fromDto(categoriaDto);
     	Categoria novaCategoria = categoriaService.insert(categoria);
     	
     	URI uri = ServletUriComponentsBuilder
@@ -59,8 +62,9 @@ public class CategoriaResource {
     @PutMapping("/{id}")
     public ResponseEntity<Categoria> update(
     		@PathVariable Integer id, 
-    		@RequestBody Categoria categoria){
-    	categoria.setId(id);
+    		@Valid @RequestBody CategoriaDto categoriaDto){
+    	Categoria categoria = categoriaService.fromDto(categoriaDto);
+    	categoria.setId(id);    	
     	Categoria categoriaAtualizada = categoriaService.update(categoria);    	
     	
     	return ResponseEntity.ok().body(categoriaAtualizada);
