@@ -10,9 +10,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.educandoweb.api.domain.Cidade;
 import com.educandoweb.api.domain.Cliente;
+import com.educandoweb.api.domain.Endereco;
+import com.educandoweb.api.domain.enums.TipoCliente;
 import com.educandoweb.api.dto.ClienteDto;
+import com.educandoweb.api.dto.ClienteNewDto;
+import com.educandoweb.api.repositories.CidadeRepository;
 import com.educandoweb.api.repositories.ClienteRepository;
+import com.educandoweb.api.repositories.EnderecoRepository;
 import com.educandoweb.api.services.exceptions.DataIntegrityException;
 import com.educandoweb.api.services.exceptions.ObjectNotFoundException;
 
@@ -21,6 +27,12 @@ public class ClienteService {
 
     @Autowired
     private ClienteRepository clienteRepository;
+    
+    @Autowired
+    private CidadeRepository cidadeRepository;
+    
+    @Autowired
+    private EnderecoRepository enderecoRepository;
 
     public Cliente find(Integer id){
         Cliente returnedCliente = new Cliente();
@@ -37,7 +49,8 @@ public class ClienteService {
     public Cliente update(Cliente clienteRecebido) {
     	Cliente cliente = find(clienteRecebido.getId());
     	
-    	cliente = updateData(cliente,clienteRecebido);    	
+    	cliente = updateData(cliente,clienteRecebido);   
+    	enderecoRepository.saveAll(cliente.getEnderecos());
     	
     	return clienteRepository.save(cliente);
     }
@@ -61,6 +74,11 @@ public class ClienteService {
     	return clientesDto;
     }
     
+    public Cliente insert(Cliente cliente) {
+    	cliente.setId(null);
+    	return clienteRepository.save(cliente);
+    }
+    
     public Page<Cliente> findPage(
     		Integer pages,
     		Integer lines,
@@ -82,6 +100,24 @@ public class ClienteService {
     public Cliente fromDto(ClienteDto clienteDto) {
     	
     	return new Cliente(clienteDto.getId(),clienteDto.getNome(),clienteDto.getEmail());
+    }
+    
+    public Cliente fromDto(ClienteNewDto clienteNewDto) {
+    	Cliente cliente = new Cliente(null,clienteNewDto.getNome(),clienteNewDto.getEmail(),clienteNewDto.getCpfOuCnpj(),TipoCliente.toEnum(clienteNewDto.getTipo()));
+    	Cidade cidade = cidadeRepository.findById(clienteNewDto.getCidadeId()).get();
+    	Endereco endereco = new Endereco(null,clienteNewDto.getLogradouro(),clienteNewDto.getNumero(),clienteNewDto.getComplemento(),clienteNewDto.getBairro(),clienteNewDto.getCep(),cliente,cidade);
+    	cliente.getEnderecos().add(endereco);
+    	cliente.getTelefones().add(clienteNewDto.getTelefone());
+    	
+    	if(clienteNewDto.getTelefone2() != null) {
+    		cliente.getTelefones().add(clienteNewDto.getTelefone2());
+    	}
+    	if(clienteNewDto.getTelefone3() != null) {
+    		cliente.getTelefones().add(clienteNewDto.getTelefone3());
+    	}
+    	
+    	return cliente;
+    	
     }
     
 }
