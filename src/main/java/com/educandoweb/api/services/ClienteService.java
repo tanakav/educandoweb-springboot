@@ -76,7 +76,9 @@ public class ClienteService {
     
     public Cliente insert(Cliente cliente) {
     	cliente.setId(null);
-    	return clienteRepository.save(cliente);
+    	Cliente newCliente = clienteRepository.save(cliente);
+    	enderecoRepository.saveAll(newCliente.getEnderecos());
+    	return newCliente;
     }
     
     public Page<Cliente> findPage(
@@ -103,11 +105,12 @@ public class ClienteService {
     }
     
     public Cliente fromDto(ClienteNewDto clienteNewDto) {
-    	Cliente cliente = new Cliente(null,clienteNewDto.getNome(),clienteNewDto.getEmail(),clienteNewDto.getCpfOuCnpj(),TipoCliente.toEnum(clienteNewDto.getTipo()));
-    	Cidade cidade = cidadeRepository.findById(clienteNewDto.getCidadeId()).get();
+    	Cliente cliente = new Cliente(null,clienteNewDto.getNome(),clienteNewDto.getEmail(),clienteNewDto.getCpfOuCnpj(),TipoCliente.toEnum(clienteNewDto.getTipo()));    	
+    	Cidade cidade = cidadeRepository.findById(clienteNewDto.getCidadeId()).get();    	
     	Endereco endereco = new Endereco(null,clienteNewDto.getLogradouro(),clienteNewDto.getNumero(),clienteNewDto.getComplemento(),clienteNewDto.getBairro(),clienteNewDto.getCep(),cliente,cidade);
+    	    	
     	cliente.getEnderecos().add(endereco);
-    	cliente.getTelefones().add(clienteNewDto.getTelefone());
+    	cliente.getTelefones().add(clienteNewDto.getTelefone());    	
     	
     	if(clienteNewDto.getTelefone2() != null) {
     		cliente.getTelefones().add(clienteNewDto.getTelefone2());
