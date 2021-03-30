@@ -9,7 +9,9 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
 import com.educandoweb.api.domain.Cliente;
+import com.educandoweb.api.services.validation.ClienteUpdate;
 
+@ClienteUpdate
 public class ClienteDto implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
