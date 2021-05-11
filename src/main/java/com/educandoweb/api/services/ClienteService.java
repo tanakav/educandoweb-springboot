@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.educandoweb.api.domain.Cidade;
 import com.educandoweb.api.domain.Cliente;
@@ -74,6 +75,7 @@ public class ClienteService {
     	return clientesDto;
     }
     
+    @Transactional
     public Cliente insert(Cliente cliente) {
     	cliente.setId(null);
     	Cliente newCliente = clienteRepository.save(cliente);
