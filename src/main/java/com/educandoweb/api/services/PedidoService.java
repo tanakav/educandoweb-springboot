@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.educandoweb.api.domain.ItemPedido;
 import com.educandoweb.api.domain.PagamentoComBoleto;
 import com.educandoweb.api.domain.Pedido;
+import com.educandoweb.api.domain.Produto;
 import com.educandoweb.api.domain.enums.EstadoPagamento;
 import com.educandoweb.api.repositories.ItemPedidoRepository;
 import com.educandoweb.api.repositories.PagamentoRepository;
@@ -32,6 +33,9 @@ public class PedidoService {
 	@Autowired
 	private ItemPedidoRepository itemPedidoRepository;
 	
+	@Autowired
+	private ClienteService clienteService;
+	
 	public Pedido find(Integer id) {
 		Pedido pedido;
 		
@@ -47,6 +51,7 @@ public class PedidoService {
 	public Pedido insert(Pedido pedido) {
 		pedido.setId(null);
 		pedido.setInstante(new Date());
+		pedido.setCliente(clienteService.find(pedido.getCliente().getId()));
 		pedido.getPagamento().setEstado(EstadoPagamento.PENDENTE);
 		pedido.getPagamento().setPedido(pedido);
 		
@@ -59,12 +64,15 @@ public class PedidoService {
 		pagamentoRepository.save(pedido.getPagamento());
 		
 		for(ItemPedido item: pedido.getItens()) {
+			Produto produto = produtoService.find(item.getProduto().getId());
 			item.setDesconto(0.0);
-			item.setPreco(produtoService.find(item.getProduto().getId()).getPreco());
+			item.setProduto(produto);
+			item.setPreco(produto.getPreco());
 			item.setPedido(pedido);
 		}
 		
 		itemPedidoRepository.saveAll(pedido.getItens());
+		System.out.println(pedido);
 		
 		return pedido;
 		
